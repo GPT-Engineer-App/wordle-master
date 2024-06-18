@@ -20,87 +20,89 @@
         <p id="message" class="text-center mt-4"></p>
     </div>
     <script>
-        const board = document.getElementById('board');
-        const guessInput = document.getElementById('guessInput');
-        const submitGuess = document.getElementById('submitGuess');
-        const message = document.getElementById('message');
-        const newGameButton = document.createElement('button');
-        newGameButton.textContent = 'New Game';
-        newGameButton.classList.add('bg-green-500', 'text-white', 'p-2', 'w-full', 'rounded', 'mt-4');
-        document.querySelector('.bg-white').appendChild(newGameButton);
-        let word = 'APPLE'; // This should be dynamically set in a real app
-        let currentRow = 0;
+        document.addEventListener('DOMContentLoaded', () => {
+            const board = document.getElementById('board');
+            const guessInput = document.getElementById('guessInput');
+            const submitGuess = document.getElementById('submitGuess');
+            const message = document.getElementById('message');
+            const newGameButton = document.createElement('button');
+            newGameButton.textContent = 'New Game';
+            newGameButton.classList.add('bg-green-500', 'text-white', 'p-2', 'w-full', 'rounded', 'mt-4');
+            document.querySelector('.bg-white').appendChild(newGameButton);
+            let word = 'APPLE'; // This should be dynamically set in a real app
+            let currentRow = 0;
 
-        function createBoard() {
-            board.innerHTML = '';
-            for (let i = 0; i < 6; i++) {
-                for (let j = 0; j < 5; j++) {
-                    const cell = document.createElement('div');
-                    cell.classList.add('border', 'p-4', 'text-center', 'text-2xl', 'font-bold');
-                    cell.setAttribute('id', `cell-${i}-${j}`);
-                    board.appendChild(cell);
+            function createBoard() {
+                board.innerHTML = '';
+                for (let i = 0; i < 6; i++) {
+                    for (let j = 0; j < 5; j++) {
+                        const cell = document.createElement('div');
+                        cell.classList.add('border', 'p-4', 'text-center', 'text-2xl', 'font-bold');
+                        cell.setAttribute('id', `cell-${i}-${j}`);
+                        board.appendChild(cell);
+                    }
                 }
             }
-        }
 
-        function checkGuess(guess) {
-            const result = [];
-            for (let i = 0; i < 5; i++) {
-                if (guess[i] === word[i]) {
-                    result.push('correct');
-                } else if (word.includes(guess[i])) {
-                    result.push('present');
-                } else {
-                    result.push('absent');
+            function checkGuess(guess) {
+                const result = [];
+                for (let i = 0; i < 5; i++) {
+                    if (guess[i] === word[i]) {
+                        result.push('correct');
+                    } else if (word.includes(guess[i])) {
+                        result.push('present');
+                    } else {
+                        result.push('absent');
+                    }
                 }
+                return result;
             }
-            return result;
-        }
 
-        function updateBoard(guess, result) {
-            for (let i = 0; i < 5; i++) {
-                const cell = document.getElementById(`cell-${currentRow}-${i}`);
-                cell.textContent = guess[i];
-                cell.classList.add(result[i]);
-            }
-            currentRow++;
-        }
-
-        function startNewGame() {
-            word = 'APPLE'; // This should be dynamically set in a real app
-            currentRow = 0;
-            message.textContent = '';
-            submitGuess.disabled = false;
-            guessInput.value = '';
-            createBoard();
-        }
-
-        submitGuess.addEventListener('click', () => {
-            try {
-                const guess = guessInput.value.toUpperCase();
-                if (guess.length !== 5 || !/^[A-Z]+$/.test(guess)) {
-                    message.textContent = 'Guess must be 5 letters and only contain alphabets';
-                    return;
+            function updateBoard(guess, result) {
+                for (let i = 0; i < 5; i++) {
+                    const cell = document.getElementById(`cell-${currentRow}-${i}`);
+                    cell.textContent = guess[i];
+                    cell.classList.add(result[i]);
                 }
-                const result = checkGuess(guess);
-                updateBoard(guess, result);
+                currentRow++;
+            }
+
+            function startNewGame() {
+                word = 'APPLE'; // This should be dynamically set in a real app
+                currentRow = 0;
+                message.textContent = '';
+                submitGuess.disabled = false;
                 guessInput.value = '';
-                if (guess === word) {
-                    message.textContent = 'Congratulations! You guessed the word!';
-                    submitGuess.disabled = true;
-                } else if (currentRow === 6) {
-                    message.textContent = `Game over! The word was ${word}`;
-                    submitGuess.disabled = true;
-                }
-            } catch (error) {
-                console.error('Error processing guess:', error);
-                message.textContent = 'An error occurred. Please try again.';
+                createBoard();
             }
+
+            submitGuess.addEventListener('click', () => {
+                try {
+                    const guess = guessInput.value.toUpperCase();
+                    if (guess.length !== 5 || !/^[A-Z]+$/.test(guess)) {
+                        message.textContent = 'Guess must be 5 letters and only contain alphabets';
+                        return;
+                    }
+                    const result = checkGuess(guess);
+                    updateBoard(guess, result);
+                    guessInput.value = '';
+                    if (guess === word) {
+                        message.textContent = 'Congratulations! You guessed the word!';
+                        submitGuess.disabled = true;
+                    } else if (currentRow === 6) {
+                        message.textContent = `Game over! The word was ${word}`;
+                        submitGuess.disabled = true;
+                    }
+                } catch (error) {
+                    console.error('Error processing guess:', error);
+                    message.textContent = 'An error occurred. Please try again.';
+                }
+            });
+
+            newGameButton.addEventListener('click', startNewGame);
+
+            createBoard();
         });
-
-        newGameButton.addEventListener('click', startNewGame);
-
-        createBoard();
     </script>
 </body>
 </html>
