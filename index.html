@@ -78,8 +78,8 @@
         submitGuess.addEventListener('click', () => {
             try {
                 const guess = guessInput.value.toUpperCase();
-                if (guess.length !== 5) {
-                    message.textContent = 'Guess must be 5 letters';
+                if (guess.length !== 5 || !/^[A-Z]+$/.test(guess)) {
+                    message.textContent = 'Guess must be 5 letters and only contain alphabets';
                     return;
                 }
                 const result = checkGuess(guess);
